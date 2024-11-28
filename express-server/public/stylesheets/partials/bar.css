@@ -1,0 +1,28 @@
+.bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #422d02;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+}
+
+
+.bar-middle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 400px;
+}
+
+
+button {
+    background-color: #af814c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}

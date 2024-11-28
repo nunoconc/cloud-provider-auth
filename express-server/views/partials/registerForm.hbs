@@ -1,0 +1,19 @@
+<section class="page" id="form_register">
+    <h2>Register</h2>
+    <form>
+        <fieldset>
+            <label for="register_name">Your Name</label>
+            <input id="register_name" placeholder="Joao Antonio" required autocomplete="name">
+            <label for="register_email">Your Email</label>
+            <input id="register_email" placeholder="joao.antonio@...com" type="email" autocomplete="username" required>
+            <label for="register_password">Your Password</label>
+            <input id="register_password" type="password" autocomplete="new-password" required>
+        </fieldset>
+    </form>
+</section>
+
+{{!--
+    Using autocomplete is a good practice to prevent the browser from auto-filling the field.
+    In this case email will be using username so it be used by the browser to auto-fill the field.
+    Always use ids for each set of labels and inputs.
+ --}}
