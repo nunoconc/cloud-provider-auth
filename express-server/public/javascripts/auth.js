@@ -27,11 +27,8 @@ const Auth = {
 
         const response = await API.login({ email, password });
 
-        if (response.ok) {
-            alert(`Welcome ${response.name}`);
-        } else {
-            alert(response.message);
-        }
+
+        Auth.postLogin(response, {email, ...response});
     },
     register: async (event) => {
         event.preventDefault();
@@ -42,10 +39,16 @@ const Auth = {
 
         const response = await API.register({ name, email, password });
 
-        if (response.ok) {
-            alert(`Welcome ${response.name}, with email: ${response.email}`);
-        } else {
+        Auth.postLogin(response, {name, email, ...response});
+
+    },
+    postLogin: async (response, user) => {
+        if (!response.ok) {
             alert(response.message);
+            return;
         }
-    }
+
+        localStorage.setItem('user', JSON.stringify(user));
+        window.location.href = '/user';
+    },
 }
