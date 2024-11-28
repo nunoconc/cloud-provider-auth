@@ -51,4 +51,31 @@ const Auth = {
         localStorage.setItem('user', JSON.stringify(user));
         window.location.href = '/user';
     },
+    postLogout: async () => {
+        localStorage.removeItem('user');
+        window.location.href = '/';
+    },
+    validate: ()=> {
+        const login = document.getElementById('bar_login');
+        const register = document.getElementById('bar_register');
+        const logout = document.getElementById('bar_logout');
+        const nameHTML = document.getElementById('user_name');
+        const emailHTML = document.getElementById('user_email');
+
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!user) {
+            if(window.location.href.endsWith('/user')) {
+                window.location.href = '/auth/login';
+            }
+            logout.hidden = true;
+        } else {
+            if(nameHTML && emailHTML) {
+                nameHTML.textContent = user.name;
+                emailHTML.textContent = user.email;
+            }
+            login.hidden = true;
+            register.hidden = true;
+        }
+    }
 }
