@@ -1,11 +1,12 @@
 <section class="page" id="form_login">
     <h2>Login</h2>
-    <form>
+    <form onsubmit="Auth.login(event)">
         <fieldset>
             <label for="login_email">Your Email</label>
             <input id="login_email" placeholder="joao.antonio@...com" type="email" autocomplete="username" required>
             <label for="login_password">Your Password</label>
             <input id="login_password" type="password" autocomplete="current-password" required>
         </fieldset>
+        <button type="submit">Login</button>
     </form>
 </section>

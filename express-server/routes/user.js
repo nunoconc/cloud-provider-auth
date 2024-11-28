@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 
-/* GET home page. */
+/* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('home', { title: 'Home Page' });
+  res.render('user', { title: 'User Page' });
 });
 
 export default router;

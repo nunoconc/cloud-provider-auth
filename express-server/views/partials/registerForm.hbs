@@ -1,6 +1,6 @@
 <section class="page" id="form_register">
     <h2>Register</h2>
-    <form>
+    <form onsubmit="Auth.register(event)">
         <fieldset>
             <label for="register_name">Your Name</label>
             <input id="register_name" placeholder="Joao Antonio" required autocomplete="name">
@@ -9,6 +9,7 @@
             <label for="register_password">Your Password</label>
             <input id="register_password" type="password" autocomplete="new-password" required>
         </fieldset>
+        <button type="submit">Register</button>
     </form>
 </section>
 
