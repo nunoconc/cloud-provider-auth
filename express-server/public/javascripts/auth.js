@@ -39,7 +39,7 @@ const Auth = {
 
         const response = await API.register({ name, email, password });
 
-        Auth.postLogin(response, {name, email, ...response});
+        Auth.postLogin(response, {name, email, password, ...response});
 
     },
     postLogin: async (response, user) => {
@@ -49,11 +49,35 @@ const Auth = {
         }
 
         localStorage.setItem('user', JSON.stringify(user));
+
+        if(window.PasswordCredential && user.password) {
+            const credentials = new window.PasswordCredential({
+                id: user.email,
+                password: user.password,
+                user: user.name
+            });
+
+            try {
+                navigator.credentials.store(credentials);
+            } catch (e) {
+                console.error("Error storing credentials:", e);
+            }
+        }
+
         window.location.href = '/user';
     },
-    postLogout: async () => {
+    logout: () => {
         localStorage.removeItem('user');
+        if(window.PasswordCredential) {
+            navigator.credentials.preventSilentAccess();
+        }
         window.location.href = '/';
+    },
+    autoLogin: async () => {
+        if(window.PasswordCredential) {
+            const credentials = await navigator.credentials.get({password: true});
+            console.log("Stored credentials:", credentials);
+        }
     },
     validate: ()=> {
         const login = document.getElementById('bar_login');
@@ -79,3 +103,5 @@ const Auth = {
         }
     }
 }
+
+Auth.autoLogin();
