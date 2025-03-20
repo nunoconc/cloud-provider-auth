@@ -6,6 +6,9 @@ const API = {
     register: async (user) => {
         return await API.makePost('register', user);
     },
+    loginFromGoogle: async (data) => {
+        return await API.makePost('login-google', data);
+    },
     makePost: async (action, user) => {
         const response = await fetch(API.endpoint + action, {
             method: 'POST',
@@ -78,6 +81,13 @@ const Auth = {
             const credentials = await navigator.credentials.get({password: true});
             console.log("Stored credentials:", credentials);
         }
+    },
+    loginFromGoogle: async (data) => {
+        const response = await API.loginFromGoogle(data);
+        Auth.postLogin(response, {
+            name: response.name,
+            email: response.email,
+        });
     },
     validate: ()=> {
         const login = document.getElementById('bar_login');

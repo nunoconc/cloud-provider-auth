@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
     <script src="/javascripts/auth.js"></script>
-  </head>
-  <body onload="Auth.validate()">
-    {{{body}}}
-  </body>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function loginFromGoogle(data) {
+            Auth.loginFromGoogle(data)
+        }
+    </script>
+</head>
+<body onload="Auth.validate()">
+{{{body}}}
+</body>
 </html>
