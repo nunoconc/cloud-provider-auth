@@ -113,5 +113,3 @@ const Auth = {
         }
     }
 }
-
-Auth.autoLogin();

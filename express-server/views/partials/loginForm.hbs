@@ -1,14 +1,24 @@
 <section class="page" id="form_login">
     <h2>Login</h2>
     <form onsubmit="Auth.login(event)">
-        <fieldset>
+        <fieldset style="display: grid; grid-auto-flow: row; grid-row-gap: 10px;">
             <label for="login_email">Your Email</label>
             <input id="login_email" placeholder="joao.antonio@...com" type="email" autocomplete="username" required>
-            <label for="login_password">Your Password</label>
-            <input id="login_password" type="password" autocomplete="current-password" required>
+            <section hidden id="login_section_password">
+                <label for="login_password">Your Password</label>
+                <input id="login_password" type="password" autocomplete="current-password" required>
+            </section>
+            <section hidden id="login_section_webauthn">
+                <button>Login With Authn</button>
+            </section>
         </fieldset>
-        <button type="submit">Login</button>
-        <fieldset>
+        <p>
+            <button type="submit">Login</button>
+        </p>
+        <p>
+            <a href="/auth/register">Register new account instead</a>
+        </p>
+        <fieldset style="display: flex; width: 100px; border: none;">
             <div id="g_id_onload"
                  data-client_id="985634069069-fgegqtlbjbk2eui04lce5kkdoaml3egt.apps.googleusercontent.com"
                  data-context="signin"
