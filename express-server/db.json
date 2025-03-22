@@ -9,6 +9,11 @@
       "name": "maria",
       "email": "mar@gmail.com",
       "password": "$2a$10$PpaI4X114uoAU2I.DywRL.FJNdL7S.ApMEtoI8LuwIt5Goepu9dRO"
+    },
+    {
+      "name": "example",
+      "email": "example@gmail.com",
+      "password": "$2a$10$qL2Y6fQSbZBE7.waXQ/Y9.aqS3MOPicG4s0Qb512f5DtONSSKipWi"
     }
   ]
 }

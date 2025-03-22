@@ -77,6 +77,20 @@ router.post('/login-google', async function (req, res) {
     res.send({ok: true, name: user.name, email: user.email});
 })
 
+router.post('/auth-options', async function (req, res) {
+    const foundUser = db.data.users.find(u => u.email === req.body.email);
+    if (foundUser) {
+        res.send({
+            password : foundUser.password !== false,
+            google: foundUser.federated && foundUser.federated.google,
+            webauthn: foundUser.webauthn,
+        });
+    } else {
+        res.send({
+            password : true,
+        });
+    }
+})
 
 router.post('/register', async function (req, res) {
     const salt = bcrypt.genSaltSync(10);

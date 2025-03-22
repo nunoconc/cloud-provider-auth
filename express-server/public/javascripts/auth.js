@@ -1,5 +1,8 @@
 const API = {
     endpoint: '/auth/',
+    checkAuthOptions: async (user) => {
+        return await API.makePost('auth-options', user);
+    },
     login: async (user) => {
         return await API.makePost('login', user);
     },
@@ -22,16 +25,36 @@ const API = {
 }
 
 const Auth = {
+    checkAuthOptions: async () => {
+        const response = await API.checkAuthOptions({
+            email: document.getElementById("login_email").value,
+        });
+
+        Auth.loginStep = 2;
+
+        if (response.password) {
+            document.getElementById("login_section_password").hidden = false;
+        }
+
+        if (response.webauthn) {
+            document.getElementById("login_section_webauthn").hidden = false;
+        }
+    },
     login: async (event) => {
-        event.preventDefault();
+        if (event) event.preventDefault();
 
-        const email = document.getElementById('login_email').value;
-        const password = document.getElementById('login_password').value;
+        if (Auth.loginStep === 1) {
+            Auth.checkAuthOptions();
+        } else {
+            // Step 2, normal login
+            const email = document.getElementById('login_email').value;
+            const password = document.getElementById('login_password').value;
 
-        const response = await API.login({ email, password });
+            const response = await API.login({email, password});
 
 
-        Auth.postLogin(response, {email, ...response});
+            Auth.postLogin(response, {email, ...response});
+        }
     },
     register: async (event) => {
         event.preventDefault();
@@ -40,7 +63,7 @@ const Auth = {
         const email = document.getElementById('register_email').value;
         const password = document.getElementById('register_password').value;
 
-        const response = await API.register({ name, email, password });
+        const response = await API.register({name, email, password});
 
         Auth.postLogin(response, {name, email, password, ...response});
 
@@ -53,7 +76,7 @@ const Auth = {
 
         localStorage.setItem('user', JSON.stringify(user));
 
-        if(window.PasswordCredential && user.password) {
+        if (window.PasswordCredential && user.password) {
             const credentials = new window.PasswordCredential({
                 id: user.email,
                 password: user.password,
@@ -71,15 +94,22 @@ const Auth = {
     },
     logout: () => {
         localStorage.removeItem('user');
-        if(window.PasswordCredential) {
+        if (window.PasswordCredential) {
             navigator.credentials.preventSilentAccess();
         }
         window.location.href = '/';
     },
     autoLogin: async () => {
-        if(window.PasswordCredential) {
+        if (window.PasswordCredential) {
             const credentials = await navigator.credentials.get({password: true});
             console.log("Stored credentials:", credentials);
+
+            // If have credentials try to login
+            if (credentials) {
+                document.getElementById('login_email').value = credentials.id;
+                document.getElementById('login_password').value = credentials.password;
+                Auth.login();
+            }
         }
     },
     loginFromGoogle: async (data) => {
@@ -89,7 +119,7 @@ const Auth = {
             email: response.email,
         });
     },
-    validate: ()=> {
+    validate: () => {
         const login = document.getElementById('bar_login');
         const register = document.getElementById('bar_register');
         const logout = document.getElementById('bar_logout');
@@ -99,17 +129,23 @@ const Auth = {
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (!user) {
-            if(window.location.href.endsWith('/user')) {
+            if (window.location.href.endsWith('/user')) {
                 window.location.href = '/auth/login';
             }
             logout.hidden = true;
         } else {
-            if(nameHTML && emailHTML) {
+            if (nameHTML && emailHTML) {
                 nameHTML.textContent = user.name;
                 emailHTML.textContent = user.email;
             }
             login.hidden = true;
             register.hidden = true;
         }
+    },
+    loginStep: 1,
+    init: () => {
+        document.getElementById('login_section_password').hidden = true;
+        document.getElementById('login_section_webauthn').hidden = true;
+
     }
 }
