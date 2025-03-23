@@ -14,6 +14,15 @@
       "name": "example",
       "email": "example@gmail.com",
       "password": "$2a$10$qL2Y6fQSbZBE7.waXQ/Y9.aqS3MOPicG4s0Qb512f5DtONSSKipWi"
+    },
+    {
+      "email": "nmpconceicao@gmail.com",
+      "name": "Nuno Conceição",
+      "password": false,
+      "federated": {
+        "google": "985634069069-fgegqtlbjbk2eui04lce5kkdoaml3egt.apps.googleusercontent.com"
+      },
+      "currentChallenge": "ypnMil-Stqy0uwre5Slv1bTGvh3PrEJCGCOljpGvpuY"
     }
   ]
 }

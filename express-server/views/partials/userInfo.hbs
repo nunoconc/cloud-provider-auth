@@ -1,5 +1,11 @@
 <section class="page" id="info_user">
     <h2>User</h2>
-    <div><span>Name:</span><span id="user_name"></span></div>
-    <div><span>Email:</span><span id="user_email"></span></div>
+    <section style="display: grid; grid-auto-flow: row; grid-row-gap: 10px;">
+        <div><span>Name:</span><span id="user_name"></span></div>
+        <div><span>Email:</span><span id="user_email"></span></div>
+    </section>
+    <p>
+        <button onclick="Auth.addWebAuthn();">Add Authenticator / Passkey</button>
+    </p>
+
 </section>
