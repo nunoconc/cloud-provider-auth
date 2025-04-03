@@ -115,15 +115,13 @@ router.post("/webauthn-login-options", async (req, res) => {
     //}
 
     const options = {
+        rpID,
         timeout: 60000,
-        allowCredentials: [],
-        devices: user && user.devices ? user.devices.map(dev => ({
-            id: dev.credentialID,
-            type: 'public-key',
+        allowCredentials: user && user.devices ? user.devices.map(dev => ({
+            id: Buffer.from(dev.credentialID).toString('base64url'),
             transports: dev.transports,
         })) : [],
         userVerification: 'required',
-        rpID,
     };
 
     const loginOpts = await generateAuthenticationOptions(options);
@@ -131,6 +129,8 @@ router.post("/webauthn-login-options", async (req, res) => {
     if (user) {
         user.currentChallenge = loginOpts.challenge;
     }
+
+    await db.write();
 
     res.send(loginOpts);
 });
@@ -154,7 +154,7 @@ router.post("/webauthn-login-verification", async (req, res) => {
     const bodyCredIDBuffer = base64url.toBuffer(data.rawId);
 
     for (const dev of user.devices) {
-        const currentCredential = new Buffer(dev.credentialID.data);
+        const currentCredential =  Buffer.from(dev.credentialID.data);
         if (bodyCredIDBuffer.equals(currentCredential)) {
             dbAuthenticator = dev;
             break;
@@ -168,13 +168,15 @@ router.post("/webauthn-login-verification", async (req, res) => {
     let verification;
     try {
         const options = {
-            credential: data,
+            response: data,
             expectedChallenge: `${expectedChallenge}`,
             expectedOrigin,
             expectedRPID: rpID,
-            authenticator: {
-                ...dbAuthenticator,
-                credentialPublicKey: new Buffer(dbAuthenticator.credentialPublicKey.data) // Re-convert to Buffer from JSON
+            credential: {
+                id: Buffer.from(dbAuthenticator.credentialID).toString('base64url'),
+                publicKey:   dbAuthenticator.credentialPublicKey2,
+                counter: dbAuthenticator.counter,
+                transports: dbAuthenticator.transports,
             },
             requireUserVerification: true,
         };
@@ -304,16 +306,17 @@ router.post("/webauthn-registration-verification", async (req, res) => {
     const {verified, registrationInfo} = verification;
 
     if (verified && registrationInfo) {
-        const {credentialPublicKey, credentialID, counter} = registrationInfo;
+        const {publicKey: credentialPublicKey, id: credentialID, counter} = registrationInfo.credential;
 
         const existingDevice = user.devices ? user.devices.find(
-            device => new Buffer(device.credentialID.data).equals(credentialID)
+            device =>  base64url.toBuffer(device.credentialID.data).equals(credentialID)
         ) : false;
 
         if (!existingDevice) {
             const newDevice = {
-                credentialPublicKey,
-                credentialID,
+                credentialPublicKey:  base64url.toBuffer(credentialPublicKey),
+                credentialPublicKey2: credentialPublicKey,
+                credentialID:  base64url.toBuffer(credentialID),
                 counter,
                 transports: data.response.transports,
             };
